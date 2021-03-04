@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:flutter_mqtt_app/mqtt/state/MQTTAppState.dart';
 import 'package:flutter_mqtt_app/mqtt/MQTTManager.dart';
 
-
 class MQTTView extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
@@ -66,7 +65,7 @@ class _MQTTViewState extends State<MQTTView> {
   }
 
   Widget _buildColumn() {
-    return Column(
+    return ListView(
       children: <Widget>[
         _buildConnectionStateText(
             _prepareStateMessageFrom(currentAppState.getAppConnectionState)),
@@ -81,10 +80,13 @@ class _MQTTViewState extends State<MQTTView> {
       padding: const EdgeInsets.all(20.0),
       child: Column(
         children: <Widget>[
-          _buildTextFieldWith(_hostTextController, 'Enter broker address',currentAppState.getAppConnectionState),
+          _buildTextFieldWith(_hostTextController, 'Enter broker address',
+              currentAppState.getAppConnectionState),
           const SizedBox(height: 10),
           _buildTextFieldWith(
-              _topicTextController, 'Enter a topic to subscribe or listen', currentAppState.getAppConnectionState),
+              _topicTextController,
+              'Enter a topic to subscribe or listen',
+              currentAppState.getAppConnectionState),
           const SizedBox(height: 10),
           _buildPublishMessageRow(),
           const SizedBox(height: 10),
@@ -99,7 +101,8 @@ class _MQTTViewState extends State<MQTTView> {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[
         Expanded(
-          child: _buildTextFieldWith(_messageTextController, 'Enter a message', currentAppState.getAppConnectionState),
+          child: _buildTextFieldWith(_messageTextController, 'Enter a message',
+              currentAppState.getAppConnectionState),
         ),
         _buildSendButtonFrom(currentAppState.getAppConnectionState)
       ],
@@ -125,15 +128,17 @@ class _MQTTViewState extends State<MQTTView> {
         state == MQTTAppConnectionState.connected) {
       shouldEnable = true;
     } else if ((controller == _hostTextController &&
-        state == MQTTAppConnectionState.disconnected) || (controller == _topicTextController &&
-        state == MQTTAppConnectionState.disconnected)) {
+            state == MQTTAppConnectionState.disconnected) ||
+        (controller == _topicTextController &&
+            state == MQTTAppConnectionState.disconnected)) {
       shouldEnable = true;
     }
     return TextField(
         enabled: shouldEnable,
         controller: controller,
         decoration: InputDecoration(
-          contentPadding: const EdgeInsets.only(left: 0, bottom: 0, top: 0, right: 0),
+          contentPadding:
+              const EdgeInsets.only(left: 0, bottom: 0, top: 0, right: 0),
           labelText: hintText,
         ));
   }
@@ -154,10 +159,12 @@ class _MQTTViewState extends State<MQTTView> {
   Widget _buildConnecteButtonFrom(MQTTAppConnectionState state) {
     return Row(
       children: <Widget>[
-
         Expanded(
-          child: RaisedButton(
-            color: Colors.lightBlueAccent,
+          child: ElevatedButton(
+            // color: Colors.lightBlueAccent,
+            style: ButtonStyle(
+                backgroundColor:
+                    MaterialStateProperty.all<Color>(Colors.lightBlueAccent)),
             child: const Text('Connect'),
             onPressed: state == MQTTAppConnectionState.disconnected
                 ? _configureAndConnect
@@ -166,8 +173,11 @@ class _MQTTViewState extends State<MQTTView> {
         ),
         const SizedBox(width: 10),
         Expanded(
-          child: RaisedButton(
-            color: Colors.redAccent,
+          child: ElevatedButton(
+            // color: Colors.redAccent,
+            style: ButtonStyle(
+                backgroundColor:
+                    MaterialStateProperty.all<Color>(Colors.redAccent)),
             child: const Text('Disconnect'),
             onPressed: state == MQTTAppConnectionState.connected
                 ? _disconnect
@@ -179,8 +189,11 @@ class _MQTTViewState extends State<MQTTView> {
   }
 
   Widget _buildSendButtonFrom(MQTTAppConnectionState state) {
-    return RaisedButton(
-      color: Colors.green,
+    return ElevatedButton(
+      // color: Colors.green,
+      style: ButtonStyle(
+          backgroundColor:
+              MaterialStateProperty.all<Color>(Colors.greenAccent)),
       child: const Text('Send'),
       onPressed: state == MQTTAppConnectionState.connected
           ? () {
@@ -189,6 +202,7 @@ class _MQTTViewState extends State<MQTTView> {
           : null, //
     );
   }
+
   // Utility functions
   String _prepareStateMessageFrom(MQTTAppConnectionState state) {
     switch (state) {
@@ -204,7 +218,7 @@ class _MQTTViewState extends State<MQTTView> {
   void _configureAndConnect() {
     // TODO: Use UUID
     String osPrefix = 'Flutter_iOS';
-    if(Platform.isAndroid){
+    if (Platform.isAndroid) {
       osPrefix = 'Flutter_Android';
     }
     manager = MQTTManager(
@@ -216,12 +230,13 @@ class _MQTTViewState extends State<MQTTView> {
     manager.connect();
   }
 
-  void _disconnect(){
+  void _disconnect() {
     manager.disconnect();
   }
+
   void _publishMessage(String text) {
     String osPrefix = 'Flutter_iOS';
-    if(Platform.isAndroid){
+    if (Platform.isAndroid) {
       osPrefix = 'Flutter_Android';
     }
     final String message = osPrefix + ' says: ' + text;
